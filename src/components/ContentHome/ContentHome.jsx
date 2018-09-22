@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react'
+import styled from 'styled-components'
 
 const ContentHome = props => (
   <ContentHomeStyled>
@@ -12,7 +12,7 @@ const ContentHome = props => (
       come!)
     </div>
   </ContentHomeStyled>
-);
+)
 
 const ContentHomeStyled = styled.section`
   display: flex;
@@ -37,6 +37,6 @@ const ContentHomeStyled = styled.section`
     font-size: 10px;
     margin-top: 80px;
   }
-`;
+`
 
-export default ContentHome;
+export default ContentHome

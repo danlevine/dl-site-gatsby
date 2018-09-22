@@ -1,3 +1,3 @@
-import ContentHome from "./ContentHome";
+import ContentHome from './ContentHome'
 
-export default ContentHome;
+export default ContentHome

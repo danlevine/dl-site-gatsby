@@ -1,3 +1,3 @@
-import PuckmanAvater from "./PuckmanAvatar";
+import PuckmanAvatar from './PuckmanAvatar'
 
-export default PuckmanAvater;
+export default PuckmanAvatar

@@ -1,3 +1,3 @@
-import Puckman from "./Puckman";
+import Puckman from './Puckman'
 
-export default Puckman;
+export default Puckman

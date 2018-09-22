@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react'
+import styled from 'styled-components'
 
 const ContentAbout = props => (
   <ContentAboutStyled>
@@ -22,7 +22,7 @@ const ContentAbout = props => (
       web.
     </p>
   </ContentAboutStyled>
-);
+)
 
 const ContentAboutStyled = styled.section`
   padding: 40px;
@@ -39,6 +39,6 @@ const ContentAboutStyled = styled.section`
   p:first-of-type {
     margin: 20px 0 40px;
   }
-`;
+`
 
-export default ContentAbout;
+export default ContentAbout

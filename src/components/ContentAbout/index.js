@@ -1,3 +1,3 @@
-import ContentAbout from "./ContentAbout";
+import ContentAbout from './ContentAbout'
 
-export default ContentAbout;
+export default ContentAbout

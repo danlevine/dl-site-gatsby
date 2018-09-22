@@ -1,69 +1,69 @@
-import React from "react";
-import styled from "styled-components";
-import { lighten, darken, transparentize } from "polished";
-import PuckmanAvatar from "./PuckmanAvatar";
+import React from 'react'
+import styled from 'styled-components'
+import { lighten, darken, transparentize } from 'polished'
+import PuckmanAvatar from './PuckmanAvatar'
 
 class Puckman extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       puckman: {
         x: 15,
         y: 15,
-        size: 20
+        size: 20,
       },
-      gameOn: false
-    };
+      gameOn: false,
+    }
 
-    this.insertCoin = this.insertCoin.bind(this);
-    this.checkForElementToDestroy = this.checkForElementToDestroy.bind(this);
+    this.insertCoin = this.insertCoin.bind(this)
+    this.checkForElementToDestroy = this.checkForElementToDestroy.bind(this)
   }
 
   insertCoin() {
-    if (this.state.gameOn) return; // return if game already started
+    if (this.state.gameOn) return // return if game already started
 
-    this.setState({ gameOn: true });
-    document.addEventListener("keydown", e => {
-      const keyCode = e.keyCode;
+    this.setState({ gameOn: true })
+    document.addEventListener('keydown', e => {
+      const keyCode = e.keyCode
 
       const keyMap = {
         left: 37,
         up: 38,
         right: 39,
-        down: 40
-      };
+        down: 40,
+      }
 
       if ([37, 38, 39, 40].indexOf(keyCode) !== -1) {
-        const oldX = this.state.puckman.x;
-        const oldY = this.state.puckman.y;
-        let newX = oldX;
-        let newY = oldY;
+        const oldX = this.state.puckman.x
+        const oldY = this.state.puckman.y
+        let newX = oldX
+        let newY = oldY
 
-        const increment = 15;
-        if (keyCode === keyMap["left"]) newX = oldX - increment;
-        else if (keyCode === keyMap["up"]) newY = oldY - increment;
-        else if (keyCode === keyMap["right"]) newX = oldX + increment;
-        else if (keyCode === keyMap["down"]) newY = oldY + increment;
+        const increment = 15
+        if (keyCode === keyMap['left']) newX = oldX - increment
+        else if (keyCode === keyMap['up']) newY = oldY - increment
+        else if (keyCode === keyMap['right']) newX = oldX + increment
+        else if (keyCode === keyMap['down']) newY = oldY + increment
 
-        this.checkForElementToDestroy(newX, newY);
+        this.checkForElementToDestroy(newX, newY)
 
         this.setState({
-          puckman: { x: newX, y: newY, size: this.state.puckman.size }
-        });
+          puckman: { x: newX, y: newY, size: this.state.puckman.size },
+        })
       }
-    });
+    })
   }
 
   checkForElementToDestroy(x, y) {
-    const { size } = this.state.puckman;
+    const { size } = this.state.puckman
     const overlappingElements = [
       document.elementFromPoint(x, y),
       document.elementFromPoint(x + size, y),
       document.elementFromPoint(x + size, y + size),
       document.elementFromPoint(x, y + size),
-      document.elementFromPoint(x + size / 2, y + size / 2)
-    ];
+      document.elementFromPoint(x + size / 2, y + size / 2),
+    ]
 
     const uniqueOverlappingElements = overlappingElements.filter(function(
       item,
@@ -73,16 +73,16 @@ class Puckman extends React.Component {
       return (
         ar.indexOf(item) === i &&
         item.children.length === 0 &&
-        !item.className.includes("puckman")
-      );
-    });
+        !item.className.includes('puckman')
+      )
+    })
 
     uniqueOverlappingElements.forEach(element => {
       // console.log(element);
       // debugger;
       // element.parentNode.removeChild(element);
-      element.classList.add("puckman-food");
-    });
+      element.classList.add('puckman-food')
+    })
   }
 
   render() {
@@ -93,22 +93,22 @@ class Puckman extends React.Component {
           <PuckmanAvatar x={this.state.puckman.x} y={this.state.puckman.y} />
         )}
       </PuckmanStyled>
-    );
+    )
   }
 }
 
 const StyleButtonVariables = {
-  color: "hsla(10, 90%, 40%, 1)",
-  size: "25"
-};
+  color: 'hsla(10, 90%, 40%, 1)',
+  size: '25',
+}
 
 const PuckmanStyled = styled.div`
   .puckman-start-btn {
     position: absolute;
     bottom: 20px;
     right: 20px;
-    width: ${StyleButtonVariables.size + "px"};
-    height: ${StyleButtonVariables.size + "px"};
+    width: ${StyleButtonVariables.size + 'px'};
+    height: ${StyleButtonVariables.size + 'px'};
     border: 0;
     margin: 1em;
     outline: none;
@@ -117,40 +117,40 @@ const PuckmanStyled = styled.div`
     cursor: pointer;
     transition: box-shadow 200ms;
 
-    box-shadow: inset 0 ${StyleButtonVariables.size / 32 + "px"} 0
+    box-shadow: inset 0 ${StyleButtonVariables.size / 32 + 'px'} 0
         ${lighten(0.05, StyleButtonVariables.color)},
-      inset 0 ${StyleButtonVariables.size / -32 + "px"} 0
+      inset 0 ${StyleButtonVariables.size / -32 + 'px'} 0
         ${darken(0.05, StyleButtonVariables.color)},
-      inset 0 0 0 ${StyleButtonVariables.size / 32 + "px"}
+      inset 0 0 0 ${StyleButtonVariables.size / 32 + 'px'}
         ${darken(0.03, StyleButtonVariables.color)},
-      inset 0 0 0 ${StyleButtonVariables.size / 12 + "px"}
+      inset 0 0 0 ${StyleButtonVariables.size / 12 + 'px'}
         ${StyleButtonVariables.color},
-      inset 0 0 0 ${StyleButtonVariables.size / 10 + "px"}
+      inset 0 0 0 ${StyleButtonVariables.size / 10 + 'px'}
         ${darken(0.2, StyleButtonVariables.color)},
-      inset 0 0 0 ${StyleButtonVariables.size / 9.2 + "px"}
+      inset 0 0 0 ${StyleButtonVariables.size / 9.2 + 'px'}
         ${darken(0.5, StyleButtonVariables.color)},
-      inset 0 0 0 ${StyleButtonVariables.size / 7.5 + "px"}
+      inset 0 0 0 ${StyleButtonVariables.size / 7.5 + 'px'}
         ${transparentize(0.3, lighten(0.3, StyleButtonVariables.color))},
-      inset 0 0 0 ${StyleButtonVariables.size / 5.5 + "px"}
+      inset 0 0 0 ${StyleButtonVariables.size / 5.5 + 'px'}
         ${StyleButtonVariables.color},
-      inset 0 ${StyleButtonVariables.size / 2.5 + "px"}
-        ${StyleButtonVariables.size / 7.5 + "px"}
+      inset 0 ${StyleButtonVariables.size / 2.5 + 'px'}
+        ${StyleButtonVariables.size / 7.5 + 'px'}
         ${darken(0.05, StyleButtonVariables.color)},
-      inset 0 0 ${StyleButtonVariables.size / 10 + "px"}
-        ${StyleButtonVariables.size / 6 + "px"}
+      inset 0 0 ${StyleButtonVariables.size / 10 + 'px'}
+        ${StyleButtonVariables.size / 6 + 'px'}
         ${darken(0.1, StyleButtonVariables.color)},
-      0 ${StyleButtonVariables.size / 20 + "px"} 0 rgba(0, 0, 0, 0.3);
+      0 ${StyleButtonVariables.size / 20 + 'px'} 0 rgba(0, 0, 0, 0.3);
 
     &:after {
-      content: "";
+      content: '';
       position: absolute;
-      bottom: ${StyleButtonVariables.size / 20 + "px"};
-      left: ${StyleButtonVariables.size / 10 + "px"};
+      bottom: ${StyleButtonVariables.size / 20 + 'px'};
+      left: ${StyleButtonVariables.size / 10 + 'px'};
       display: block;
-      width: ${StyleButtonVariables.size / 1.25 + "px"};
-      height: ${StyleButtonVariables.size / 1.25 + "px"};
-      border: ${StyleButtonVariables.size / 15 + "px"} solid rgba(0, 0, 0, 0.3);
-      border-width: 0 0 ${StyleButtonVariables.size / 15 + "px"};
+      width: ${StyleButtonVariables.size / 1.25 + 'px'};
+      height: ${StyleButtonVariables.size / 1.25 + 'px'};
+      border: ${StyleButtonVariables.size / 15 + 'px'} solid rgba(0, 0, 0, 0.3);
+      border-width: 0 0 ${StyleButtonVariables.size / 15 + 'px'};
       border-radius: 50%;
       transition-duration: 200ms;
     }
@@ -187,6 +187,6 @@ const PuckmanStyled = styled.div`
       }
     }
   }
-`;
+`
 
-export default Puckman;
+export default Puckman

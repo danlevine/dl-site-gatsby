@@ -1,3 +1,3 @@
-import ContentLinks from "./ContentLinks";
+import ContentLinks from './ContentLinks'
 
-export default ContentLinks;
+export default ContentLinks

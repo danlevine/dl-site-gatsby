@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react'
+import styled from 'styled-components'
 
 const PuckmanAvatar = props => (
   <PuckmanAvatarStyled x={props.x} y={props.y}>
@@ -7,7 +7,7 @@ const PuckmanAvatar = props => (
     <div className="puckman__bottom" />
     <div className="puckman__cover" />
   </PuckmanAvatarStyled>
-);
+)
 
 const PuckmanAvatarStyled = styled.div`
   display: block;
@@ -15,8 +15,8 @@ const PuckmanAvatarStyled = styled.div`
   transition: 0.1s all;
   animation: slide-in-left 1s ease-out;
 
-  left: ${props => props.x + "px"};
-  top: ${props => props.y + "px"};
+  left: ${props => props.x + 'px'};
+  top: ${props => props.y + 'px'};
   width: 20px;
   height: 20px;
 
@@ -75,6 +75,6 @@ const PuckmanAvatarStyled = styled.div`
       left: 15px;
     }
   }
-`;
+`
 
-export default PuckmanAvatar;
+export default PuckmanAvatar
