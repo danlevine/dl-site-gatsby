@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { Link } from 'gatsby'
 
 class AppHeader extends React.Component {
@@ -8,7 +8,10 @@ class AppHeader extends React.Component {
 
     this.state = {
       activePage: 'home',
+      logoClicked: false,
     }
+
+    this.handleLogoClick = this.handleLogoClick.bind(this)
   }
 
   // TODO: Pull out link into seperate component
@@ -17,12 +20,19 @@ class AppHeader extends React.Component {
     return { className: classList }
   }
 
+  handleLogoClick() {
+    this.setState({ logoClicked: true })
+  }
+
   render() {
     return (
       <AppHeaderStyled>
-        <Link to="/">
-          <div className="logo">DL</div>
-        </Link>
+        <button
+          className={`logo ${this.state.logoClicked ? 'clicked' : ''}`}
+          onClick={this.handleLogoClick}
+        >
+          DL
+        </button>
         <ul className="link-list">
           {this.props.links.map(link => (
             <li key={link.title} className="link-item">
@@ -36,6 +46,24 @@ class AppHeader extends React.Component {
     )
   }
 }
+
+const rotate360 = keyframes`
+  0% {
+    transform: scale(1);
+    color: transparent;
+    background-color: #373737;
+  }
+  10% {
+    transform: scale(1);
+    color: transparent;
+    background-color: #373737;
+  }
+  100% {
+    transform: scale(100);
+    color: transparent;
+    background-color: deepskyblue;
+  }
+`
 
 const AppHeaderStyled = styled.header`
   display: flex;
@@ -55,8 +83,26 @@ const AppHeaderStyled = styled.header`
     font-weight: 600;
     padding: 4px 16px 18px 6px;
     border-radius: 3px;
-    background: #373737;
+    background-color: #373737;
     color: #f4f4f4;
+    transition: 0.1s all;
+    border: none;
+
+    &.clicked {
+      animation-fill-mode: forwards;
+      animation: ${rotate360} 1 2s linear;
+      transform: scale(100);
+      color: transparent;
+      background-color: deepskyblue;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
   }
 
   .link-list {

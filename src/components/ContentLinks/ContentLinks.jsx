@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import GithubIcon from '../../images/github.svg'
 import LinkedinIcon from '../../images/linkedin.svg'
 
-const ContentLinks = props => (
+const ContentLinks = () => (
   <ContentLinksStyled>
     <h1 className="page-title">Witness me</h1>
     <div className="links">

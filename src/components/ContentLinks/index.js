@@ -1,3 +1,3 @@
-import ContentLinks from './ContentLinks'
+import ContentLinks from './ContentLinks.jsx'
 
 export default ContentLinks

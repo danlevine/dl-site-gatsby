@@ -1,15 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const ContentAbout = props => (
+const ContentAbout = () => (
   <ContentAboutStyled>
     <h1 className="page-title">A bit about me</h1>
     <p>
-      I've always had an interest in technology and computers, especially the
-      area of interaction between the user and the device. These interactions
-      make a language that we use to communicate with our devices, and as a user
-      of these devices, my goal has been to help make this language translation
-      as seamless as possible.
+      I&apos;ve always had an interest in technology and computers, especially
+      the area of interaction between the user and the device. These
+      interactions make a language that we use to communicate with our devices,
+      and as a user of these devices, my goal has been to help make this
+      language translation as seamless as possible.
     </p>
     <p>
       Having worked on various websites as a hobbyist and a consultant during

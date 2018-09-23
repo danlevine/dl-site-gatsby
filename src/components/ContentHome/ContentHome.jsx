@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const ContentHome = props => (
+const ContentHome = () => (
   <ContentHomeStyled>
-    <small>Hi, I'm</small>
+    <small>Hi, I&apos;m</small>
     <h1 className="page-title">Daniel Levine</h1>
     <div>and I build user interfaces for the web</div>
     <div className="subtext">
