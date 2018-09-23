@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { Link } from 'gatsby'
+import { Link, navigate } from 'gatsby'
 
 class AppHeader extends React.Component {
   constructor(props) {
@@ -24,12 +24,17 @@ class AppHeader extends React.Component {
     this.setState({ logoClicked: true })
   }
 
+  handleAnimationEnd() {
+    navigate('/resume')
+  }
+
   render() {
     return (
       <AppHeaderStyled>
         <button
           className={`logo ${this.state.logoClicked ? 'clicked' : ''}`}
           onClick={this.handleLogoClick}
+          onAnimationEnd={this.handleAnimationEnd}
         >
           DL
         </button>

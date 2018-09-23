@@ -10,6 +10,7 @@
     "gatsby-plugin-offline": "^2.0.5",
     "gatsby-plugin-react-helmet": "^3.0.0",
     "gatsby-plugin-styled-components": "^3.0.0",
+    "gsap": "^2.0.2",
     "polished": "^2.1.1",
     "react": "^16.5.1",
     "react-dom": "^16.5.1",
