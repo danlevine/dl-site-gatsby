@@ -43,7 +43,8 @@ class Outrun extends React.Component {
     const roadTL = new TimelineMax({ repeat: -1 })
     roadTL.add(
       TweenMax.allFromTo(
-        [this.stripesRef, this.lanesRef],
+        // [this.stripesRef, this.lanesRef],
+        [this.lanesRef],
         0.6,
         { transform: 'translateY(-200px)', ease: Linear.easeNone },
         {
@@ -174,15 +175,24 @@ const OutrunStyled = styled.div`
     margin: 0 auto;
     text-align: center;
     position: absolute;
-    top: 150px;
+    top: 40px;
     left: 0;
     right: 0;
+    z-index: 1;
     font-family: PixelBug;
+
+    @media (min-width: 480px) {
+      top: 150px;
+    }
 
     h1 {
       font-size: 80px;
       text-shadow: -2px 2px 0 #000, 2px 2px 0 #000, 2px -2px 0 #000;
       color: yellow;
+    }
+
+    p {
+      font-weight: bold;
     }
   }
 
@@ -236,16 +246,16 @@ const OutrunStyled = styled.div`
   }
 
   .lanes {
-    display: none;
     height: 200%;
-    width: 30%;
-    border: 4px dashed white;
+    width: 40%;
+    border: 2px dashed white;
     border-top: none;
     border-bottom: none;
     margin: 0 auto;
 
     @media (min-width: 480px) {
-      display: block;
+      width: 30%;
+      border-width: 4px;
     }
   }
 
