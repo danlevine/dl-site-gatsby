@@ -7,44 +7,63 @@ import Cloud from '../../images/outrun/cloud.png'
 import PixelBugFont from '../../images/pixelBug.otf'
 
 class Outrun extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.roadTlLoopActive = true
+
+    this.handleStartButtonClick = this.handleStartButtonClick.bind(this)
+    this.checkRoadTlLoopActive = this.checkRoadTlLoopActive.bind(this)
+    this.tryPlayResume = this.tryPlayResume.bind(this)
+  }
+
   componentDidMount() {
-    const cloudTL = new TimelineMax({ repeat: -1, yoyo: true, paused: true })
-    cloudTL.add(
-      TweenMax.fromTo(
-        this.cloudRef,
-        80,
-        { transform: 'translateX(0%) translateY(0%)', ease: Power1.easeInOut },
-        { transform: 'translateX(20%) translateY(10%)', ease: Power1.easeInOut }
-      )
+    this.cloudTL = new TimelineMax({
+      repeat: -1,
+      yoyo: true,
+      paused: true,
+    })
+    this.cloudTL.fromTo(
+      this.cloudRef,
+      80,
+      { transform: 'translateX(0%) translateY(0%)', ease: Power1.easeInOut },
+      { transform: 'translateX(20%) translateY(10%)', ease: Power1.easeInOut }
     )
 
-    const carMoveTL = new TimelineMax({ repeat: -1 })
-    carMoveTL
+    this.carMoveTL = new TimelineMax({
+      repeat: -1,
+    })
+    this.carMoveTL
       .fromTo(
         this.carRef,
         16,
-        { transform: 'translateX(-55%)', ease: Power1.easeInOut },
-        { transform: 'translateX(-25%)', ease: Power1.easeInOut }
+        { transform: 'translateX(-5%)', ease: Power1.easeInOut },
+        { transform: 'translateX(25%)', ease: Power1.easeInOut }
       )
       .to(this.carRef, 32, {
-        transform: 'translateX(-55%)',
+        transform: 'translateX(-5%)',
         ease: Power1.easeInOut,
       })
 
-    const carBumpTL = new TimelineMax({
+    this.carBumpTL = new TimelineMax({
       delay: 6,
       repeatDelay: 6,
       repeat: -1,
     })
-    carBumpTL
+    this.carBumpTL
       .fromTo(this.carRef, 0.05, { marginBottom: 0 }, { marginBottom: '-3px' })
       .to(this.carRef, 0.05, { marginBottom: 0 })
 
-    const roadTL = new TimelineMax({ repeat: -1 })
-    roadTL.add(
-      TweenMax.allFromTo(
+    this.roadTL = new TimelineMax({
+      repeat: -1,
+      onRepeat: this.checkRoadTlLoopActive,
+      onRepeatParams: ['{self}'],
+      onRepeatScope: this,
+    })
+    this.roadTL.add(
+      TweenMax.fromTo(
         // [this.stripesRef, this.lanesRef],
-        [this.lanesRef],
+        this.lanesRef,
         0.6,
         { transform: 'translateY(-200px)', ease: Linear.easeNone },
         {
@@ -54,9 +73,22 @@ class Outrun extends React.Component {
       )
     )
 
-    const introTL = new TimelineMax()
-    introTL.add(
-      TweenMax.fromTo(
+    this.heroTL = new TimelineMax({ paused: true })
+    this.heroTL
+      .fromTo(
+        this.heroRef,
+        1,
+        { visibility: 'hidden', ease: Power1.easeOut },
+        { visibility: 'visible', ease: Power1.easeOut }
+      )
+      .fromTo(this.heroTxtRef, 0, { opacity: 1 }, { opacity: 0 })
+      .repeatDelay(1)
+      .repeat(-1)
+
+    // INTRO Timeline
+    this.introTL = new TimelineMax()
+    this.introTL
+      .fromTo(
         this.roadContainerRef,
         6,
         {
@@ -67,46 +99,88 @@ class Outrun extends React.Component {
           transform: 'rotateX(70deg) translateZ(0) translateY(0)',
           ease: Power1.easeOut,
         }
-      ),
-      0
-    )
-    introTL.add(
-      TweenMax.fromTo(
+      )
+      .fromTo(
         this.outrunContainerRef,
         6,
         { perspective: '20px', ease: Power1.easeOut },
-        { perspective: '120px', ease: Power1.easeOut }
-      ),
-      0
-    )
-    introTL.add(
-      TweenMax.fromTo(
+        { perspective: '120px', ease: Power1.easeOut },
+        0
+      )
+      .fromTo(
         this.cloudRef,
         3,
         { top: '140vh', ease: Power1.easeOut },
-        { top: '0', ease: Power1.easeOut }
-      ),
-      3
-    )
-    introTL.add(
-      TweenMax.fromTo(
+        { top: '0', ease: Power1.easeOut },
+        3
+      )
+      .fromTo(
         this.carRef,
         1,
         { transform: 'translateY(200%)', ease: Power1.easeOut },
-        { transform: 'translateY(0)', ease: Power1.easeOut }
-      ),
-      5
-    )
-    introTL.add(
-      TweenMax.fromTo(
-        this.heroRef,
-        0.4,
-        { opacity: 0, ease: Power1.easeOut },
-        { opacity: 1, ease: Power1.easeOut }
-      ),
-      6
-    )
-    introTL.add(cloudTL.play())
+        { transform: 'translateY(0)', ease: Power1.easeOut },
+        '-=1'
+      )
+      .add(this.heroTL.play())
+      .add(this.cloudTL.play())
+
+    this.resumeTL = new TimelineMax({ paused: true })
+    this.resumeTL
+      .fromTo(
+        this.lanesRef,
+        0.6,
+        {
+          transform: 'translateY(0)',
+          ease: Linear.easeNone,
+        },
+        { transform: 'translateY(-1500px)', ease: Linear.easeNone }
+      )
+      .to(this.heroRef, 1, { opacity: 0 })
+      .add('startRotation')
+      .to(
+        this.roadContainerRef,
+        3,
+        {
+          transform: 'rotateX(0)',
+          ease: Power1.easeInOut,
+        },
+        'startRotation'
+      )
+      .to(
+        this.roadContainerRef,
+        1,
+        { maxWidth: '800px', ease: Power1.easeInOut },
+        'startRotation+=2.5'
+      )
+      .to(
+        this.carRef,
+        0.75,
+        { transform: 'translateY(200px)', ease: Power1.easeInOut },
+        'startRotation'
+      )
+    // TweenMax.pauseAll()
+  }
+
+  checkRoadTlLoopActive(tl) {
+    if (!this.roadTlLoopActive) {
+      tl.repeat(0)
+
+      this.tryPlayResume()
+    }
+  }
+
+  tryPlayResume() {
+    if (!this.roadTlLoopActive) {
+      this.resumeTL.play()
+
+      this.carBumpTL.pause()
+      this.carMoveTL.pause()
+      this.cloudTL.pause()
+    }
+  }
+
+  handleStartButtonClick() {
+    this.roadTlLoopActive = false
   }
 
   render() {
@@ -115,7 +189,11 @@ class Outrun extends React.Component {
         <div className="cloud" ref={el => (this.cloudRef = el)} />
         <div className="hero" ref={el => (this.heroRef = el)}>
           <h1>Daniel Levine</h1>
-          <p>PRESS ENTER OR CLICK HERE TO START</p>
+          <button onClick={this.handleStartButtonClick}>
+            <span ref={el => (this.heroTxtRef = el)}>
+              PRESS ENTER OR CLICK HERE TO START
+            </span>
+          </button>
         </div>
         <div className="mountains" />
         <div
@@ -159,6 +237,7 @@ const OutrunStyled = styled.div`
   position: absolute;
   top: 0;
   left: 0;
+  overflow: hidden;
 
   .cloud {
     background: url(${Cloud}) no-repeat 0 20px;
@@ -191,8 +270,12 @@ const OutrunStyled = styled.div`
       color: yellow;
     }
 
-    p {
+    button {
       font-weight: bold;
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 16px;
     }
   }
 
@@ -313,12 +396,14 @@ const OutrunStyled = styled.div`
     /* filter: brightness(100%); */
     height: 125px;
     width: 250px;
+    margin-left: -125px;
     image-rendering: pixelated;
     background-size: contain;
 
     @media (min-width: 480px) {
       height: 150px;
       width: 300px;
+      margin-left: -150px;
     }
   }
 `
