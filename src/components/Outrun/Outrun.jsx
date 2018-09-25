@@ -1,10 +1,12 @@
 import React from 'react'
 import styled, { keyframes, injectGlobal } from 'styled-components'
-import { TweenMax, TimelineMax, Linear, Power1 } from 'gsap'
+import { TweenMax, TimelineMax, Linear, Power1, Power4 } from 'gsap'
+
+import ResumeText from './ResumeText'
 
 import Rari from '../../images/outrun/rari.png'
 import Cloud from '../../images/outrun/cloud.png'
-import PixelBugFont from '../../images/pixelBug.otf'
+import SwissSienaFont from '../../images/outrun/fonts/SwissSiena.ttf'
 
 class Outrun extends React.Component {
   constructor(props) {
@@ -135,6 +137,8 @@ class Outrun extends React.Component {
         },
         { transform: 'translateY(-1500px)', ease: Linear.easeNone }
       )
+      .set(this.lanesRef, { display: 'none' })
+      .set(this.resumeRef, { display: 'block' })
       .to(this.heroRef, 1, { opacity: 0 })
       .add('startRotation')
       .to(
@@ -157,6 +161,12 @@ class Outrun extends React.Component {
         0.75,
         { transform: 'translateY(200px)', ease: Power1.easeInOut },
         'startRotation'
+      )
+      .fromTo(
+        this.resumeRef,
+        10,
+        { transform: 'translateY(100vh)', ease: Power4.easeOut },
+        { transform: 'translateY(0)', ease: Power4.easeOut }
       )
     // TweenMax.pauseAll()
   }
@@ -203,10 +213,13 @@ class Outrun extends React.Component {
           <div className="ground-bg" />
           <div className="road">
             <div className="lanes" ref={el => (this.lanesRef = el)} />
+            <div className="resume-container" ref={el => (this.resumeRef = el)}>
+              <ResumeText />
+            </div>
           </div>
-          <div className="stripes-container">
+          {/* <div className="stripes-container">
             <div className="stripes" ref={el => (this.stripesRef = el)} />
-          </div>
+          </div> */}
         </div>
         <div className="car" ref={el => (this.carRef = el)} />
       </OutrunStyled>
@@ -215,9 +228,9 @@ class Outrun extends React.Component {
 }
 
 injectGlobal`
-  @font-face {
-    font-family: 'PixelBug';
-    src: url(${PixelBugFont});
+  @font-face{
+    font-family: 'SwissSienaFont';
+    src: url(${SwissSienaFont});
   }
 `
 
@@ -254,19 +267,21 @@ const OutrunStyled = styled.div`
     margin: 0 auto;
     text-align: center;
     position: absolute;
-    top: 40px;
+    top: 20px;
     left: 0;
     right: 0;
     z-index: 1;
-    font-family: PixelBug;
+    font-family: SwissSienaFont;
 
     @media (min-width: 480px) {
-      top: 150px;
+      top: 100px;
     }
 
     h1 {
-      font-size: 80px;
-      text-shadow: -2px 2px 0 #000, 2px 2px 0 #000, 2px -2px 0 #000;
+      font-size: 100px;
+      font-style: italic;
+      letter-spacing: 6px;
+      text-shadow: -5px 5px 0 #000, 2px 0px 0 #000, 2px -1px 0 #000;
       color: yellow;
     }
 
@@ -275,7 +290,8 @@ const OutrunStyled = styled.div`
       background: none;
       border: none;
       font-family: inherit;
-      font-size: 16px;
+      font-size: 22px;
+      letter-spacing: 1px;
     }
   }
 
@@ -340,6 +356,12 @@ const OutrunStyled = styled.div`
       width: 30%;
       border-width: 4px;
     }
+  }
+
+  .resume-container {
+    display: none;
+    overflow: auto;
+    font-family: SwissSienaFont;
   }
 
   .stripes-container {
