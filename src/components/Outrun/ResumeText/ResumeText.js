@@ -75,10 +75,7 @@ const ResumeText = () => (
       <h2>University of Texas at Austin</h2>
       <ul>
         <li>Fall 2009: Bachelor of Arts in Economics</li>
-        <li>
-          Spring 2009: McCombs Business Foundations Certificate University
-          Honors
-        </li>
+        <li>Spring 2009: McCombs Business Foundations University Honors</li>
       </ul>
       <h2>Austin Community College</h2>
       <ul>
@@ -126,13 +123,13 @@ const ResumeTextStyled = styled.div`
 
   .experience-subtitle {
     font-style: italic;
-    margin:bottom: 2px;
-    color: #555
+    margin-bottom: 2px;
+    color: #ddd;
   }
-   
-   p {
-     margin-bottom: 10px;
-   }
+
+  p {
+    margin-bottom: 10px;
+  }
 `
 
 export default ResumeText

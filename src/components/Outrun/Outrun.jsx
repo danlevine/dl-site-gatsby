@@ -140,6 +140,7 @@ class Outrun extends React.Component {
       .set(this.lanesRef, { display: 'none' })
       .set(this.resumeRef, { display: 'block' })
       .to(this.heroRef, 1, { opacity: 0 })
+      .set(this.heroRef, { display: 'none' })
       .add('startRotation')
       .to(
         this.roadContainerRef,
@@ -362,6 +363,9 @@ const OutrunStyled = styled.div`
     display: none;
     overflow: auto;
     font-family: SwissSienaFont;
+    color: #fff;
+    font-size: 18px;
+    letter-spacing: 1px;
   }
 
   .stripes-container {
