@@ -8,13 +8,26 @@ import Rari from '../../images/outrun/rari.png'
 import Cloud from '../../images/outrun/cloud.png'
 import SwissSienaFont from '../../images/outrun/fonts/SwissSiena.ttf'
 
+// CustomEase.create(
+//   'easeToLinear',
+//   'M0,0 C0.126,0.382 0.254,0.872 0.794,0.964 0.948,0.99 0.92,0.984 1,1'
+// )
+
 class Outrun extends React.Component {
   constructor(props) {
     super(props)
 
     this.roadTlLoopActive = true
 
+    this.state = {
+      hideScrolledTxt: false,
+    }
+
     this.handleStartButtonClick = this.handleStartButtonClick.bind(this)
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this)
+    this.handleResumeContainerScroll = this.handleResumeContainerScroll.bind(
+      this
+    )
     this.checkRoadTlLoopActive = this.checkRoadTlLoopActive.bind(this)
     this.tryPlayResume = this.tryPlayResume.bind(this)
   }
@@ -34,14 +47,13 @@ class Outrun extends React.Component {
 
     this.carMoveTL = new TimelineMax({
       repeat: -1,
+      yoyo: true,
     })
     this.carMoveTL
-      .fromTo(
-        this.carRef,
-        16,
-        { transform: 'translateX(-5%)', ease: Power1.easeInOut },
-        { transform: 'translateX(25%)', ease: Power1.easeInOut }
-      )
+      .to(this.carRef, 16, {
+        transform: 'translateX(25%)',
+        ease: Power1.easeInOut,
+      })
       .to(this.carRef, 32, {
         transform: 'translateX(-5%)',
         ease: Power1.easeInOut,
@@ -53,8 +65,8 @@ class Outrun extends React.Component {
       repeat: -1,
     })
     this.carBumpTL
-      .fromTo(this.carRef, 0.05, { marginBottom: 0 }, { marginBottom: '-3px' })
-      .to(this.carRef, 0.05, { marginBottom: 0 })
+      .to(this.carRef, 0.05, { marginBottom: '-3px' })
+      .to(this.carRef, 0.05, { marginBottom: '0' })
 
     this.roadTL = new TimelineMax({
       repeat: -1,
@@ -62,9 +74,9 @@ class Outrun extends React.Component {
       onRepeatParams: ['{self}'],
       onRepeatScope: this,
     })
-    this.roadTL.add(
-      TweenMax.fromTo(
-        // [this.stripesRef, this.lanesRef],
+    this.roadTL
+      .fromTo(
+        // [this.grassRef, this.lanesRef],
         this.lanesRef,
         0.6,
         { transform: 'translateY(-200px)', ease: Linear.easeNone },
@@ -73,7 +85,31 @@ class Outrun extends React.Component {
           ease: Linear.easeNone,
         }
       )
-    )
+      .fromTo(
+        // [this.grassRef, this.lanesRef],
+        this.grassRef,
+        0.6,
+        { transform: 'translateY(200px)', ease: Linear.easeNone },
+        {
+          transform: 'translateY(0)',
+          ease: Linear.easeNone,
+        },
+        0
+      )
+
+    // this.grassTL = new TimelineMax({
+    //   repeat: -1,
+    // })
+    // this.grassTL.to(
+    //   // [this.grassRef, this.lanesRef],
+    //   this.grassRef,
+    //   0.6,
+    //   { transform: 'translateY(200px)', ease: Linear.easeNone },
+    //   {
+    //     transform: 'translateY(0)',
+    //     ease: Linear.easeNone,
+    //   }
+    // )
 
     this.heroTL = new TimelineMax({ paused: true })
     this.heroTL
@@ -128,14 +164,17 @@ class Outrun extends React.Component {
 
     this.resumeTL = new TimelineMax({ paused: true })
     this.resumeTL
-      .fromTo(
-        this.lanesRef,
-        0.6,
-        {
-          transform: 'translateY(0)',
-          ease: Linear.easeNone,
-        },
-        { transform: 'translateY(-1500px)', ease: Linear.easeNone }
+      .add(
+        TweenMax.allFromTo(
+          [this.grassRef, this.lanesRef],
+          // [this.lanesRef],
+          1.6,
+          {
+            transform: 'translateY(0)',
+            ease: Linear.easeNone,
+          },
+          { transform: 'translateY(-1500px)', ease: Linear.easeNone }
+        )
       )
       .set(this.lanesRef, { display: 'none' })
       .set(this.resumeRef, { display: 'block' })
@@ -144,7 +183,7 @@ class Outrun extends React.Component {
       .add('startRotation')
       .to(
         this.roadContainerRef,
-        3,
+        1,
         {
           transform: 'rotateX(0)',
           ease: Power1.easeInOut,
@@ -153,22 +192,23 @@ class Outrun extends React.Component {
       )
       .to(
         this.roadContainerRef,
-        1,
+        0.5,
         { maxWidth: '800px', ease: Power1.easeInOut },
-        'startRotation+=2.5'
+        'startRotation+=.75'
       )
       .to(
         this.carRef,
-        0.75,
-        { transform: 'translateY(200px)', ease: Power1.easeInOut },
+        0.25,
+        { yPercent: 200, ease: Power1.easeInOut },
         'startRotation'
       )
       .fromTo(
         this.resumeRef,
-        10,
+        2,
         { transform: 'translateY(100vh)', ease: Power4.easeOut },
         { transform: 'translateY(0)', ease: Power4.easeOut }
       )
+      .set(this.resumeRef, { overflow: 'auto' })
     // TweenMax.pauseAll()
   }
 
@@ -182,16 +222,41 @@ class Outrun extends React.Component {
 
   tryPlayResume() {
     if (!this.roadTlLoopActive) {
-      this.resumeTL.play()
-
-      this.carBumpTL.pause()
-      this.carMoveTL.pause()
-      this.cloudTL.pause()
+      this.resumeTL
+        .eventCallback('onComplete', () => {
+          this.carBumpTL.pause()
+          this.carMoveTL.pause()
+          this.cloudTL.pause()
+        })
+        .eventCallback('onReverseComplete', () => {
+          this.roadTL.repeat(-1).play()
+          this.carBumpTL.resume()
+          this.carMoveTL.resume()
+          this.cloudTL.resume()
+        })
+        .play()
     }
   }
 
   handleStartButtonClick() {
     this.roadTlLoopActive = false
+  }
+
+  handleBackButtonClick() {
+    this.roadTlLoopActive = true
+    this.resumeTL
+      .eventCallback('onReverseComplete', () => {
+        this.carBumpTL.resume()
+        this.carMoveTL.resume()
+        this.cloudTL.resume()
+        this.setState({ hideScrolledTxt: false })
+      })
+      .reverse()
+    this.roadTL.repeat(-1).play()
+  }
+
+  handleResumeContainerScroll() {
+    this.setState({ hideScrolledTxt: true })
   }
 
   render() {
@@ -211,11 +276,20 @@ class Outrun extends React.Component {
           className="road-container"
           ref={el => (this.roadContainerRef = el)}
         >
-          <div className="ground-bg" />
+          <div className="ground-bg">
+            <div className="grass" ref={el => (this.grassRef = el)} />
+          </div>
           <div className="road">
             <div className="lanes" ref={el => (this.lanesRef = el)} />
-            <div className="resume-container" ref={el => (this.resumeRef = el)}>
-              <ResumeText />
+            <div
+              className="resume-container"
+              ref={el => (this.resumeRef = el)}
+              onScroll={this.handleResumeContainerScroll}
+            >
+              <ResumeText
+                backButtonClick={this.handleBackButtonClick}
+                hideScrolledTxt={this.state.hideScrolledTxt}
+              />
             </div>
           </div>
           {/* <div className="stripes-container">
@@ -253,6 +327,15 @@ const OutrunStyled = styled.div`
   left: 0;
   overflow: hidden;
 
+  button {
+    background: none;
+    border: none;
+    font-family: inherit;
+    &:focus {
+      outline: none;
+      font-style: italic;
+    }
+  }
   .cloud {
     background: url(${Cloud}) no-repeat 0 20px;
     background-size: cover;
@@ -288,9 +371,6 @@ const OutrunStyled = styled.div`
 
     button {
       font-weight: bold;
-      background: none;
-      border: none;
-      font-family: inherit;
       font-size: 22px;
       letter-spacing: 1px;
     }
@@ -317,13 +397,29 @@ const OutrunStyled = styled.div`
   }
 
   .ground-bg {
-    width: 100000px;
+    width: 10000px;
     height: 100%;
     background-color: #10a810;
     position: absolute;
     left: 50%;
     right: 50%;
-    transform: translateX(-50%);
+    /* transform: translateX(-50%); */
+    margin-left: -5000px;
+    overflow: hidden;
+  }
+
+  .grass {
+    background: repeating-linear-gradient(
+      0deg,
+      #10a810,
+      #10a810 50px,
+      #008f00 50px,
+      #008f00 100px
+    );
+    height: 200%;
+    width: 100%;
+    top: -100%;
+    position: absolute;
   }
 
   .road {
@@ -361,7 +457,7 @@ const OutrunStyled = styled.div`
 
   .resume-container {
     display: none;
-    overflow: auto;
+    overflow: hidden;
     font-family: SwissSienaFont;
     color: #fff;
     font-size: 18px;

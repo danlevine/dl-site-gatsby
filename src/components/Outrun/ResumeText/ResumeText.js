@@ -1,8 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const ResumeText = () => (
+const ResumeText = props => (
   <ResumeTextStyled>
+    {!props.hideScrolledTxt && (
+      <div className="scroll-text">Scroll Down for More</div>
+    )}
     <h1>Daniel Levine</h1>
     <section className="section-experience">
       <div className="section-title">EXPERIENCE</div>
@@ -96,11 +99,25 @@ const ResumeText = () => (
         Responsive Design Photoshop / Illustrator
       </p>
     </section>
+    <button className="back-button" onClick={props.backButtonClick}>
+      Back
+    </button>
   </ResumeTextStyled>
 )
 
 const ResumeTextStyled = styled.div`
   padding: 40px;
+
+  .scroll-text {
+    position: absolute;
+    left: 50%;
+    margin-left: -100px;
+    min-width: 200px;
+    color: #000;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 20px;
+  }
 
   h1 {
     width: 100%;
@@ -128,7 +145,32 @@ const ResumeTextStyled = styled.div`
   }
 
   p {
-    margin-bottom: 10px;
+    margin-bottom: 40px;
+  }
+
+  .back-button {
+    font-family: inherit;
+    font-size: 45px;
+    display: flex;
+    flex-flow: column;
+    line-height: 1;
+    align-items: center;
+    color: yellow;
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, 2px 2px 0 #000,
+      -2px 2px 0 #000;
+
+    /* Workaround to fix button to bottom right due to transform + position: fixed bug */
+    position: sticky;
+    bottom: 50px;
+    margin: 0 0 0 auto;
+    /* End of workaround */
+
+    &:before {
+      content: '\\E010';
+      font-size: 80px;
+      line-height: 0.5;
+      margin-bottom: -10px;
+    }
   }
 `
 
