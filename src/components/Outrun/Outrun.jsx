@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { keyframes, injectGlobal } from 'styled-components'
-import { TweenMax, TimelineMax, Linear, Power1, Power4 } from 'gsap'
+import { TimelineMax, Linear, Power1, Power4, TweenMax } from 'gsap'
 
 import ResumeText from './ResumeText'
 
@@ -21,8 +21,10 @@ class Outrun extends React.Component {
 
     this.state = {
       hideScrolledTxt: false,
+      carSpeed: 4,
     }
 
+    this.initAnimations = this.initAnimations.bind(this)
     this.handleStartButtonClick = this.handleStartButtonClick.bind(this)
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this)
     this.handleResumeContainerScroll = this.handleResumeContainerScroll.bind(
@@ -33,6 +35,10 @@ class Outrun extends React.Component {
   }
 
   componentDidMount() {
+    this.initAnimations()
+  }
+
+  initAnimations() {
     this.cloudTL = new TimelineMax({
       repeat: -1,
       yoyo: true,
@@ -41,6 +47,7 @@ class Outrun extends React.Component {
     this.cloudTL.fromTo(
       this.cloudRef,
       80,
+      // 4,
       { transform: 'translateX(0%) translateY(0%)', ease: Power1.easeInOut },
       { transform: 'translateX(20%) translateY(10%)', ease: Power1.easeInOut }
     )
@@ -48,6 +55,7 @@ class Outrun extends React.Component {
     this.carMoveTL = new TimelineMax({
       repeat: -1,
       yoyo: true,
+      paused: true,
     })
     this.carMoveTL
       .to(this.carRef, 16, {
@@ -63,6 +71,7 @@ class Outrun extends React.Component {
       delay: 6,
       repeatDelay: 6,
       repeat: -1,
+      paused: true,
     })
     this.carBumpTL
       .to(this.carRef, 0.05, { marginBottom: '-3px' })
@@ -74,42 +83,15 @@ class Outrun extends React.Component {
       onRepeatParams: ['{self}'],
       onRepeatScope: this,
     })
-    this.roadTL
-      .fromTo(
-        // [this.grassRef, this.lanesRef],
-        this.lanesRef,
-        0.6,
-        { transform: 'translateY(-200px)', ease: Linear.easeNone },
-        {
-          transform: 'translateY(0)',
-          ease: Linear.easeNone,
-        }
-      )
-      .fromTo(
-        // [this.grassRef, this.lanesRef],
-        this.grassRef,
-        0.6,
-        { transform: 'translateY(200px)', ease: Linear.easeNone },
-        {
-          transform: 'translateY(0)',
-          ease: Linear.easeNone,
-        },
-        0
-      )
-
-    // this.grassTL = new TimelineMax({
-    //   repeat: -1,
-    // })
-    // this.grassTL.to(
-    //   // [this.grassRef, this.lanesRef],
-    //   this.grassRef,
-    //   0.6,
-    //   { transform: 'translateY(200px)', ease: Linear.easeNone },
-    //   {
-    //     transform: 'translateY(0)',
-    //     ease: Linear.easeNone,
-    //   }
-    // )
+    this.roadTL.fromTo(
+      this.lanesRef,
+      this.state.carSpeed,
+      { transform: 'translateY(-100vh)', ease: Linear.easeNone },
+      {
+        transform: 'translateY(0)',
+        ease: Linear.easeNone,
+      }
+    )
 
     this.heroTL = new TimelineMax({ paused: true })
     this.heroTL
@@ -123,8 +105,20 @@ class Outrun extends React.Component {
       .repeatDelay(1)
       .repeat(-1)
 
+    this.defaultLoopTL = new TimelineMax({ paused: true })
+    this.defaultLoopTL
+      .add(this.heroTL.play(), 0)
+      .add(this.cloudTL.play(), 0)
+      .add(this.carMoveTL.play(), 0)
+      .add(this.carBumpTL.play(), 0)
+
     // INTRO Timeline
-    this.introTL = new TimelineMax()
+    this.introTL = new TimelineMax({
+      onCompleteScope: this,
+      onComplete: function() {
+        this.defaultLoopTL.play()
+      },
+    })
     this.introTL
       .fromTo(
         this.roadContainerRef,
@@ -159,25 +153,9 @@ class Outrun extends React.Component {
         { transform: 'translateY(0)', ease: Power1.easeOut },
         '-=1'
       )
-      .add(this.heroTL.play())
-      .add(this.cloudTL.play())
 
     this.resumeTL = new TimelineMax({ paused: true })
     this.resumeTL
-      .add(
-        TweenMax.allFromTo(
-          [this.grassRef, this.lanesRef],
-          // [this.lanesRef],
-          1.6,
-          {
-            transform: 'translateY(0)',
-            ease: Linear.easeNone,
-          },
-          { transform: 'translateY(-1500px)', ease: Linear.easeNone }
-        )
-      )
-      .set(this.lanesRef, { display: 'none' })
-      .set(this.resumeRef, { display: 'block' })
       .to(this.heroRef, 1, { opacity: 0 })
       .set(this.heroRef, { display: 'none' })
       .add('startRotation')
@@ -209,30 +187,39 @@ class Outrun extends React.Component {
         { transform: 'translateY(0)', ease: Power4.easeOut }
       )
       .set(this.resumeRef, { overflow: 'auto' })
-    // TweenMax.pauseAll()
+    // END ResumeTL
   }
 
   checkRoadTlLoopActive(tl) {
-    if (!this.roadTlLoopActive) {
-      tl.repeat(0)
+    console.log('check road loop to stop')
+    if (this.roadTlLoopActive) return
+    console.log('road loop to stop')
 
-      this.tryPlayResume()
-    }
+    tl.eventCallback('onComplete', () => {
+      console.log('road loop stopped -> endroad animation started')
+      TweenMax.fromTo(
+        // Push lanes offscreen downwards
+        this.lanesRef,
+        this.state.carSpeed,
+        {
+          transform: 'translateY(0)',
+          ease: Linear.easeNone,
+        },
+        {
+          transform: 'translateY(100vh)',
+          ease: Linear.easeNone,
+          onCompleteScope: this,
+          onComplete: this.tryPlayResume,
+        }
+      )
+    }).repeat(0)
   }
 
   tryPlayResume() {
     if (!this.roadTlLoopActive) {
       this.resumeTL
         .eventCallback('onComplete', () => {
-          this.carBumpTL.pause()
-          this.carMoveTL.pause()
-          this.cloudTL.pause()
-        })
-        .eventCallback('onReverseComplete', () => {
-          this.roadTL.repeat(-1).play()
-          this.carBumpTL.resume()
-          this.carMoveTL.resume()
-          this.cloudTL.resume()
+          this.defaultLoopTL.pause()
         })
         .play()
     }
@@ -243,16 +230,31 @@ class Outrun extends React.Component {
   }
 
   handleBackButtonClick() {
-    this.roadTlLoopActive = true
+    this.roadTlLoopActive = true // Reset road loop flag
+    this.defaultLoopTL.resume()
+
     this.resumeTL
       .eventCallback('onReverseComplete', () => {
-        this.carBumpTL.resume()
-        this.carMoveTL.resume()
-        this.cloudTL.resume()
-        this.setState({ hideScrolledTxt: false })
+        this.roadTL.repeat(-1) // re-initialize road loop
+
+        TweenMax.fromTo(
+          // Pull lanes onscreen from top
+          this.lanesRef,
+          this.state.carSpeed * 2,
+          {
+            transform: 'translateY(-200vh)',
+            ease: Linear.easeNone,
+          },
+          {
+            transform: 'translateY(0)',
+            ease: Linear.easeNone,
+            onCompleteScope: this,
+            onComplete: () => this.roadTL.play(),
+          }
+        )
+        this.setState({ hideScrolledTxt: false }) // Reset scrolled text hiding
       })
       .reverse()
-    this.roadTL.repeat(-1).play()
   }
 
   handleResumeContainerScroll() {
@@ -276,9 +278,7 @@ class Outrun extends React.Component {
           className="road-container"
           ref={el => (this.roadContainerRef = el)}
         >
-          <div className="ground-bg">
-            <div className="grass" ref={el => (this.grassRef = el)} />
-          </div>
+          <div className="ground-bg" />
           <div className="road">
             <div className="lanes" ref={el => (this.lanesRef = el)} />
             <div
@@ -292,9 +292,6 @@ class Outrun extends React.Component {
               />
             </div>
           </div>
-          {/* <div className="stripes-container">
-            <div className="stripes" ref={el => (this.stripesRef = el)} />
-          </div> */}
         </div>
         <div className="car" ref={el => (this.carRef = el)} />
       </OutrunStyled>
@@ -408,20 +405,6 @@ const OutrunStyled = styled.div`
     overflow: hidden;
   }
 
-  .grass {
-    background: repeating-linear-gradient(
-      0deg,
-      #10a810,
-      #10a810 50px,
-      #008f00 50px,
-      #008f00 100px
-    );
-    height: 200%;
-    width: 100%;
-    top: -100%;
-    position: absolute;
-  }
-
   .road {
     background-color: #9c969c;
     border: 0 solid #eee;
@@ -430,7 +413,7 @@ const OutrunStyled = styled.div`
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    display: flex;
+    /* display: flex; */
     z-index: 1;
     position: absolute;
     overflow: hidden;
@@ -444,46 +427,32 @@ const OutrunStyled = styled.div`
   .lanes {
     height: 200%;
     width: 40%;
+    margin-left: 30%;
     border: 2px dashed white;
     border-top: none;
     border-bottom: none;
-    margin: 0 auto;
+    position: absolute;
+    top: 0;
+    left: 0;
 
     @media (min-width: 480px) {
       width: 30%;
+      margin-left: 35%;
       border-width: 4px;
     }
   }
 
   .resume-container {
-    display: none;
     overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
     font-family: SwissSienaFont;
     color: #fff;
     font-size: 18px;
     letter-spacing: 1px;
-  }
-
-  .stripes-container {
-    overflow: hidden;
-    position: relative;
-    height: 100%;
-    left: -5000px;
-    width: 10000px;
-    z-index: 2;
-  }
-
-  .stripes {
-    /* background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0),
-      rgba(0, 0, 0, 0) 50px,
-      rgba(0, 0, 0, 0.05) 50px,
-      rgba(0, 0, 0, 0.05) 100px
-    ); */
-    position: absolute;
-    height: 100%;
-    width: 100%;
   }
 
   .text {
