@@ -21,7 +21,7 @@ class Outrun extends React.Component {
 
     this.state = {
       hideScrolledTxt: false,
-      carSpeed: 4,
+      carSpeed: 0.8,
     }
 
     this.initAnimations = this.initAnimations.bind(this)
@@ -156,7 +156,7 @@ class Outrun extends React.Component {
 
     this.resumeTL = new TimelineMax({ paused: true })
     this.resumeTL
-      .to(this.heroRef, 1, { opacity: 0 })
+      .to(this.heroRef, 0.6, { opacity: 0 })
       .set(this.heroRef, { display: 'none' })
       .add('startRotation')
       .to(
@@ -172,7 +172,7 @@ class Outrun extends React.Component {
         this.roadContainerRef,
         0.5,
         { maxWidth: '800px', ease: Power1.easeInOut },
-        'startRotation+=.75'
+        'startRotation+=.5'
       )
       .to(
         this.carRef,
@@ -191,12 +191,9 @@ class Outrun extends React.Component {
   }
 
   checkRoadTlLoopActive(tl) {
-    console.log('check road loop to stop')
     if (this.roadTlLoopActive) return
-    console.log('road loop to stop')
 
     tl.eventCallback('onComplete', () => {
-      console.log('road loop stopped -> endroad animation started')
       TweenMax.fromTo(
         // Push lanes offscreen downwards
         this.lanesRef,
@@ -216,13 +213,15 @@ class Outrun extends React.Component {
   }
 
   tryPlayResume() {
-    if (!this.roadTlLoopActive) {
-      this.resumeTL
-        .eventCallback('onComplete', () => {
-          this.defaultLoopTL.pause()
-        })
-        .play()
-    }
+    if (this.roadTlLoopActive) return
+
+    this.resumeRef.scrollTo(0, 0) // Reset scroll container to top
+
+    this.resumeTL
+      .eventCallback('onComplete', () => {
+        this.defaultLoopTL.pause()
+      })
+      .play()
   }
 
   handleStartButtonClick() {
