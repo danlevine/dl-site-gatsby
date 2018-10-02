@@ -106,17 +106,35 @@ const ResumeText = props => (
 )
 
 const ResumeTextStyled = styled.div`
-  padding: 40px;
+  padding: 40px 10px;
+
+  @media (min-width: 480px) {
+    padding: 40px;
+  }
 
   .scroll-text {
     position: absolute;
-    left: 50%;
-    margin-left: -100px;
-    min-width: 200px;
-    color: #000;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 20px;
+    top: 10px;
+    left: 0;
+    width: 100%;
+    color: yellow;
+    text-align: center;
+    font-size: 18px;
+    letter-spacing: 2px;
+
+    @media (min-width: 480px) {
+      top: 15px;
+      font-size: 20px;
+    }
+
+    &:after {
+      content: '\uE00A';
+      font-size: 34px;
+      line-height: 0;
+      position: relative;
+      top: 5px;
+      left: 8px;
+    }
   }
 
   h1 {
@@ -150,7 +168,7 @@ const ResumeTextStyled = styled.div`
 
   .back-button {
     font-family: inherit;
-    font-size: 45px;
+    font-size: 30px;
     display: flex;
     flex-flow: column;
     line-height: 1;
@@ -161,7 +179,7 @@ const ResumeTextStyled = styled.div`
 
     /* Workaround to fix button to bottom right due to transform + position: fixed bug */
     position: sticky;
-    bottom: 50px;
+    bottom: 20px;
     margin: 0 0 0 auto;
     /* End of workaround */
 
@@ -170,6 +188,10 @@ const ResumeTextStyled = styled.div`
       font-size: 80px;
       line-height: 0.5;
       margin-bottom: -10px;
+    }
+
+    @media (min-width: 480px) {
+      bottom: 50px;
     }
   }
 `
