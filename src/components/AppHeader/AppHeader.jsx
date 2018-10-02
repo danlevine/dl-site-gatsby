@@ -33,12 +33,10 @@ class AppHeader extends React.Component {
   }
 
   handleResumeLinkEnter() {
-    console.log('hovered')
     this.setState({ resumeHovered: true })
   }
 
   handleResumeLinkExit() {
-    console.log('unhovered')
     this.setState({ resumeHovered: false })
   }
 

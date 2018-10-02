@@ -277,9 +277,7 @@ class Outrun extends React.Component {
               className="resume-btn"
               onClick={this.handleStartButtonClick}
             >
-              <span ref={el => (this.heroTxtRef = el)}>
-                PRESS ENTER OR CLICK HERE TO START
-              </span>
+              <span ref={el => (this.heroTxtRef = el)}>CLICK HERE TO VIEW</span>
             </button>
           </div>
           <button className="home-btn" onClick={this.handleHomeButtonClick}>
