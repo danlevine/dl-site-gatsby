@@ -46,6 +46,11 @@ class AppHeader extends React.Component {
               </Link>
             </li>
           ))}
+          <li className="link-item">
+            <button className="link" onClick={this.handleLogoClick}>
+              Resume
+            </button>
+          </li>
         </ul>
       </AppHeaderStyled>
     )
@@ -55,13 +60,15 @@ class AppHeader extends React.Component {
 const rotate360 = keyframes`
   0% {
     transform: scale(1);
-    color: transparent;
-    background-color: #373737;
+    color: #f4f4f4;
+    background-color: deepskyblue;
+    /* background-color: #373737; */
   }
   10% {
     transform: scale(1);
     color: transparent;
-    background-color: #373737;
+    background-color: deepskyblue;
+    /* background-color: #373737; */
   }
   100% {
     transform: scale(100);
@@ -74,7 +81,7 @@ const AppHeaderStyled = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 40px 40px 0;
+  padding: 40px 20px 0;
 
   @media (min-width: 500px) {
     padding: 40px 80px 0;
@@ -92,6 +99,12 @@ const AppHeaderStyled = styled.header`
     color: #f4f4f4;
     transition: 0.1s all;
     border: none;
+    cursor: pointer;
+    transition: 0.1s background-color ease-out;
+
+    &:hover {
+      background-color: deepskyblue;
+    }
 
     &.clicked {
       animation-fill-mode: forwards;
@@ -128,6 +141,16 @@ const AppHeaderStyled = styled.header`
     text-decoration: none;
     color: #888;
     font-weight: 600;
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+
+    @media (min-width: 500px) {
+      font-size: 16px;
+    }
   }
 
   .link:hover,
