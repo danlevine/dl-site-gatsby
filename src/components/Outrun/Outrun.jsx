@@ -265,12 +265,15 @@ class Outrun extends React.Component {
       <OutrunStyled ref={el => (this.outrunContainerRef = el)}>
         <div className="cloud" ref={el => (this.cloudRef = el)} />
         <div className="overlay" ref={el => (this.overlayRef = el)}>
-          <h1>Daniel Levine</h1>
-          <button onClick={this.handleStartButtonClick}>
-            <span ref={el => (this.heroTxtRef = el)}>
-              PRESS ENTER OR CLICK HERE TO START
-            </span>
-          </button>
+          <div className="title-container">
+            <h1>Daniel Levine</h1>
+            <button onClick={this.handleStartButtonClick}>
+              <span ref={el => (this.heroTxtRef = el)}>
+                PRESS ENTER OR CLICK HERE TO START
+              </span>
+            </button>
+          </div>
+          <div className="copyright">{`\u00A9 DL 1986`}</div>
         </div>
         <div className="mountains" />
         <div
@@ -343,18 +346,26 @@ const OutrunStyled = styled.div`
   }
 
   .overlay {
-    max-width: 600px;
-    margin: 0 auto;
-    text-align: center;
+    width: 100%;
+    height: 100%;
     position: absolute;
-    top: 20px;
+    top: 0;
     left: 0;
-    right: 0;
     z-index: 1;
     font-family: SwissSienaFont;
+    display: flex;
 
-    @media (min-width: 480px) {
-      top: 100px;
+    .title-container {
+      max-width: 600px;
+      margin: 0 auto;
+      margin-top: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+
+      @media (min-width: 480px) {
+        margin-top: 100px;
+      }
     }
 
     h1 {
@@ -370,7 +381,28 @@ const OutrunStyled = styled.div`
     button {
       font-weight: bold;
       font-size: 22px;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
+      color: #000;
+      text-shadow: -2px 2px 0 #fff, 2px 2px 0 #fff, 2px -2px 0 #fff,
+        -2px -2px 0 #fff;
+    }
+
+    .copyright {
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      color: #000;
+
+      @media (min-width: 480px) {
+        font-size: 20px;
+        letter-spacing: 7px;
+        right: 40px;
+        text-shadow: -2px 2px 0 #fff, 2px 2px 0 #fff, 2px -2px 0 #fff,
+          -2px -2px 0 #fff;
+      }
     }
   }
 
