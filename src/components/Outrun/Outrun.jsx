@@ -430,6 +430,14 @@ const OutrunStyled = styled.div`
         width: 40px;
         height: 40px;
       }
+
+      &:hover {
+        transform: scale(1.1);
+      }
+      &:focus,
+      &:active {
+        transform: skew(-10deg);
+      }
     }
   }
 
