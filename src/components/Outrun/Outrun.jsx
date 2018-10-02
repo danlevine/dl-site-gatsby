@@ -1,4 +1,5 @@
 import React from 'react'
+import { navigate } from 'gatsby'
 import styled, { keyframes, injectGlobal } from 'styled-components'
 import { TimelineMax, Linear, Power1, Power4, TweenMax } from 'gsap'
 
@@ -6,6 +7,7 @@ import ResumeText from './ResumeText'
 
 import Rari from '../../images/outrun/rari.png'
 import Cloud from '../../images/outrun/cloud.png'
+import HomeIcon from '../../images/outrun/home-icon.svg'
 import SwissSienaFont from '../../images/outrun/fonts/SwissSiena.ttf'
 
 // CustomEase.create(
@@ -256,6 +258,10 @@ class Outrun extends React.Component {
       .reverse()
   }
 
+  handleHomeButtonClick() {
+    navigate('/')
+  }
+
   handleResumeContainerScroll() {
     this.setState({ hideScrolledTxt: true })
   }
@@ -267,12 +273,18 @@ class Outrun extends React.Component {
         <div className="overlay" ref={el => (this.overlayRef = el)}>
           <div className="title-container">
             <h1>Daniel Levine</h1>
-            <button onClick={this.handleStartButtonClick}>
+            <button
+              className="resume-btn"
+              onClick={this.handleStartButtonClick}
+            >
               <span ref={el => (this.heroTxtRef = el)}>
                 PRESS ENTER OR CLICK HERE TO START
               </span>
             </button>
           </div>
+          <button className="home-btn" onClick={this.handleHomeButtonClick}>
+            <img src={HomeIcon} alt="home" />
+          </button>
           <div className="copyright">{`\u00A9 DL 1986`}</div>
         </div>
         <div className="mountains" />
@@ -334,6 +346,7 @@ const OutrunStyled = styled.div`
       outline: none;
       font-style: italic;
     }
+    cursor: pointer;
   }
   .cloud {
     background: url(${Cloud}) no-repeat 0 20px;
@@ -378,7 +391,7 @@ const OutrunStyled = styled.div`
       margin-bottom: 20px;
     }
 
-    button {
+    .resume-btn {
       font-weight: bold;
       font-size: 22px;
       letter-spacing: 2px;
@@ -394,14 +407,30 @@ const OutrunStyled = styled.div`
       font-size: 16px;
       font-weight: bold;
       letter-spacing: 4px;
-      color: #000;
+      color: #fff;
 
       @media (min-width: 480px) {
+        color: #000;
         font-size: 20px;
         letter-spacing: 7px;
         right: 40px;
         text-shadow: -2px 2px 0 #fff, 2px 2px 0 #fff, 2px -2px 0 #fff,
           -2px -2px 0 #fff;
+      }
+    }
+
+    .home-btn {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+
+      @media (min-width: 480px) {
+        left: 20px;
+        width: 40px;
+        height: 40px;
       }
     }
   }
@@ -499,16 +528,6 @@ const OutrunStyled = styled.div`
     animation-duration: 2s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
-  }
-
-  img {
-    position: absolute;
-    bottom: 100px;
-    left: 50%;
-    width: 300px;
-    margin-left: -150px;
-    image-rendering: pixelated;
-    /* filter: brightness(43%); */
   }
 
   .car {
