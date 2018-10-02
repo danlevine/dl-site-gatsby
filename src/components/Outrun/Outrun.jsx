@@ -93,10 +93,10 @@ class Outrun extends React.Component {
       }
     )
 
-    this.heroTL = new TimelineMax({ paused: true })
-    this.heroTL
+    this.overlayTL = new TimelineMax({ paused: true })
+    this.overlayTL
       .fromTo(
-        this.heroRef,
+        this.overlayRef,
         1,
         { visibility: 'hidden', ease: Power1.easeOut },
         { visibility: 'visible', ease: Power1.easeOut }
@@ -107,7 +107,7 @@ class Outrun extends React.Component {
 
     this.defaultLoopTL = new TimelineMax({ paused: true })
     this.defaultLoopTL
-      .add(this.heroTL.play(), 0)
+      .add(this.overlayTL.play(), 0)
       .add(this.cloudTL.play(), 0)
       .add(this.carMoveTL.play(), 0)
       .add(this.carBumpTL.play(), 0)
@@ -156,8 +156,8 @@ class Outrun extends React.Component {
 
     this.resumeTL = new TimelineMax({ paused: true })
     this.resumeTL
-      .to(this.heroRef, 0.6, { opacity: 0 })
-      .set(this.heroRef, { display: 'none' })
+      .to(this.overlayRef, 0.6, { opacity: 0 })
+      .set(this.overlayRef, { display: 'none' })
       .add('startRotation')
       .to(
         this.roadContainerRef,
@@ -264,7 +264,7 @@ class Outrun extends React.Component {
     return (
       <OutrunStyled ref={el => (this.outrunContainerRef = el)}>
         <div className="cloud" ref={el => (this.cloudRef = el)} />
-        <div className="hero" ref={el => (this.heroRef = el)}>
+        <div className="overlay" ref={el => (this.overlayRef = el)}>
           <h1>Daniel Levine</h1>
           <button onClick={this.handleStartButtonClick}>
             <span ref={el => (this.heroTxtRef = el)}>
@@ -342,7 +342,7 @@ const OutrunStyled = styled.div`
     image-rendering: pixelated;
   }
 
-  .hero {
+  .overlay {
     max-width: 600px;
     margin: 0 auto;
     text-align: center;
@@ -363,6 +363,8 @@ const OutrunStyled = styled.div`
       letter-spacing: 6px;
       text-shadow: -5px 5px 0 #000, 2px 0px 0 #000, 2px -1px 0 #000;
       color: yellow;
+      line-height: 0.7;
+      margin-bottom: 20px;
     }
 
     button {
