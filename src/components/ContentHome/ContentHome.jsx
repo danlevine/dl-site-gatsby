@@ -8,8 +8,9 @@ const ContentHome = () => (
     <div>and I build user interfaces for the web</div>
     <div className="subtext">
       (for example, I originally built this simple/minimal site using VueJS/Nuxt
-      and then rewrote it using React/Reach-Router/Styled-Components. More to
-      come!)
+      and then rewrote it using react-create-app/reach-router/styled-components
+      ...then ported that over to Gatsby and added Greensock for the animation
+      on my resume page. More to come!)
     </div>
   </ContentHomeStyled>
 )

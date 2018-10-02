@@ -9,9 +9,13 @@ class AppHeader extends React.Component {
     this.state = {
       activePage: 'home',
       logoClicked: false,
+      resumeHovered: false,
     }
 
     this.handleLogoClick = this.handleLogoClick.bind(this)
+    this.handleAnimationEnd = this.handleAnimationEnd.bind(this)
+    this.handleResumeLinkEnter = this.handleResumeLinkEnter.bind(this)
+    this.handleResumeLinkExit = this.handleResumeLinkExit.bind(this)
   }
 
   // TODO: Pull out link into seperate component
@@ -25,14 +29,26 @@ class AppHeader extends React.Component {
   }
 
   handleAnimationEnd() {
-    navigate('/resume')
+    if (this.state.logoClicked) navigate('/resume')
+  }
+
+  handleResumeLinkEnter() {
+    console.log('hovered')
+    this.setState({ resumeHovered: true })
+  }
+
+  handleResumeLinkExit() {
+    console.log('unhovered')
+    this.setState({ resumeHovered: false })
   }
 
   render() {
     return (
       <AppHeaderStyled>
         <button
-          className={`logo ${this.state.logoClicked ? 'clicked' : ''}`}
+          className={`logo ${this.state.logoClicked ? 'clicked' : ''} ${
+            this.state.resumeHovered ? 'resume-link-hover' : ''
+          }`}
           onClick={this.handleLogoClick}
           onAnimationEnd={this.handleAnimationEnd}
         >
@@ -47,7 +63,14 @@ class AppHeader extends React.Component {
             </li>
           ))}
           <li className="link-item">
-            <button className="link" onClick={this.handleLogoClick}>
+            <button
+              className="link"
+              onClick={this.handleLogoClick}
+              onMouseEnter={this.handleResumeLinkEnter}
+              onMouseLeave={this.handleResumeLinkExit}
+              onFocus={this.handleResumeLinkEnter}
+              onBlur={this.handleResumeLinkExit}
+            >
               Resume
             </button>
           </li>
@@ -57,23 +80,48 @@ class AppHeader extends React.Component {
   }
 }
 
-const rotate360 = keyframes`
+const transitionToResume = keyframes`
   0% {
     transform: scale(1);
     color: #f4f4f4;
     background-color: deepskyblue;
-    /* background-color: #373737; */
   }
   10% {
     transform: scale(1);
     color: transparent;
     background-color: deepskyblue;
-    /* background-color: #373737; */
   }
   100% {
     transform: scale(100);
     color: transparent;
     background-color: deepskyblue;
+  }
+`
+
+const wobble = keyframes`
+  10% {
+    transform: translate3d(0, 5px, 0);
+    background-color: deepskyblue;
+  }
+  30% {
+    transform: translate3d(0, -4px, 0);
+    background-color: deepskyblue;
+  }
+  50% {
+    transform: translate3d(0, 3px, 0);
+    background-color: #373737;
+  }
+  70% {
+    transform: translate3d(0, -2px, 0);
+    background-color: #373737;
+  }
+  90% {
+    transform: translate3d(0, 1px, 0);
+    background-color: #373737;
+  }
+  100% {
+    transform: translate3d(0, 0px, 0);
+    background-color: #373737;
   }
 `
 
@@ -101,14 +149,20 @@ const AppHeaderStyled = styled.header`
     border: none;
     cursor: pointer;
     transition: 0.1s background-color ease-out;
+    animation: ${wobble} 1.5s ease-in-out;
+    animation-delay: 2s;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
 
-    &:hover {
+    &:hover,
+    &.resume-link-hover {
       background-color: deepskyblue;
     }
 
     &.clicked {
       animation-fill-mode: forwards;
-      animation: ${rotate360} 1 2s linear;
+      animation: ${transitionToResume} 1 2s linear;
       transform: scale(100);
       color: transparent;
       background-color: deepskyblue;
