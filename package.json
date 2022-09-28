@@ -2,7 +2,7 @@
   "name": "dl-site-gatsby",
   "description": "dl-site built with Gatsby",
   "version": "1.0.0",
-  "author": "Daniel Levine <dlevine210@gmail.com>",
+  "author": "DL",
   "dependencies": {
     "babel-plugin-styled-components": "^1.7.1",
     "gatsby": "^2.0.0",
